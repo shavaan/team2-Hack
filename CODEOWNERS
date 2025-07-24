@@ -1,0 +1,9 @@
+.github @mfc-gwam-tenantops/gwam-infra-maintain
+CODEOWNERS @mfc-gwam-tenantops/gwam-infra-maintain
+
+/clusters/* @mfc-gwam-tenantops/app-p-github-gwam-hackathon-gwamre_maintain
+/clusters/* @mfc-gwam-tenantops/GWAM-Hackathon-2025-GitHub
+/clusters/* @mfc-gwam-tenantops/d365_pp_gwam-hackathon_maker
+/applications/* @mfc-gwam-tenantops/app-p-github-gwam-hackathon-gwamre_maintain
+/applications/* @mfc-gwam-tenantops/GWAM-Hackathon-2025-GitHub
+/applications/* @mfc-gwam-tenantops/d365_pp_gwam-hackathon_maker
