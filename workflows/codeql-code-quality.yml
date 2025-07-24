@@ -1,0 +1,63 @@
+noname: "GWAM Code Quality"
+
+on:
+  push:
+    branches: [develop, main]  # [WARN: DO NOT CHANGE]
+  pull_request:
+    branches: [develop, main]  # [WARN: DO NOT CHANGE]
+  schedule:
+    - cron: '0 23 * * 4'            # [WARN: DO NOT CHANGE]
+  workflow_dispatch:
+
+jobs:
+  # Need to share some secrets with your custom build command? Uncomment the following lines and replace with the env vars for your build command.
+  # Encode-Env:
+  #   runs-on: ["self-hosted","linux","X64","ets","non-delivery","gwam"]
+  #   outputs:
+  #       ARTIFACTORY_USER: ${{ steps.encode.outputs.TARGET_ARTIFACTORY_USER }}     # it's advised to prefix with 'TARGET_' here for clarity later
+  #       ARTIFACTORY_PASSWD: ${{ steps.encode.outputs.TARGET_ARTIFACTORY_PASSWD }} # it's advised to prefix with 'TARGET_' here for clarity later
+  #   steps:
+  #       - id: encode # [WARN: DO NOT CHANGE]
+  #         env:
+  #           LOCAL_ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}           # it's advised to prefix with 'LOCAL_' here for clarity later
+  #           LOCAL_ARTIFACTORY_PASSWD: ${{ secrets.ARTIFACTORY_PASSWD }}       # it's advised to prefix with 'LOCAL_' here for clarity later
+  #         run: |
+  #           echo "TARGET_ARTIFACTORY_USER=$(echo $LOCAL_ARTIFACTORY_USER | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+  #           echo "TARGET_ARTIFACTORY_PASSWD=$(echo $LOCAL_ARTIFACTORY_PASSWD | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+
+  CodeQuality-Scan: # this is the MANDATORY job that calls the central GWAM Code Quality workflow
+    # needs: Encode-Env # uncomment this line if you need to share secrets with your custom build command
+    uses: manulife-gwam/codescanworkflows/.github/workflows/gwam-code-quality.yml@main
+    secrets: inherit
+    with:
+      runs-on: '["self-hosted","linux","X64","provisioning-essentials","ubuntu-22.04","prod"]'      # replace with the appropriate tags, if necessary
+      languages: '["python"]'                                                           # replace with the language(s) you wish to scan if it is not detected
+      # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+      #
+      # Using Java? Uncomment the following lines to ensure the Java environment is set up correctly
+      # java-version: '11'                  # replace with the appropriate version of Java
+      # java-distribution: 'adopt'          # replace with the appropriate Java distribution
+      # java-cache: 'gradle'                # replace with the appropriate build tool (i.e. maven, ant, etc.)
+      #
+      # Using NodeJS? Uncomment the following line to ensure the NodeJS environment is set up correctly
+      # node-version: '18.18.0'             # replace with the appropriate version of NodeJS
+      #
+      # Using .NET? Uncomment the following line to ensure the .NET environment is set up correctly
+      # dotnet-version: '6.0.x'                         # replace with the appropriate version of .NET
+      # dotnet-quality: 'preview'                       # replace with the latest build of a specific quality channel: [daily, signed, validated, preview, ga]
+      # dotnet-global-json-file: 'csharp/global.json'   # replace or remove this line if you do not have a global.json file
+      #
+      # Using Python? Uncomment the following line to ensure the Python environment is set up correctly
+      python-version: '3.10'              # replace with the appropriate version of Python. For PyPy, prefix with 'pypy{version}' - e.g. 'pypy3.9'
+      #
+      # Using Go? Uncomment the following line to ensure the Go environment is set up correctly
+      # go-version: '1.20'                  # replace with the appropriate version of Go
+      #
+      # Autobuild failed? Uncomment the following line and replace with the build command for your project
+      # build-command: "dotnet build --no-restore /p:UseSharedCompilation=false"  # replace the `dotnet` example your build command
+      #
+      # Custom build command require secrets? Uncomment the folloing lines (along with the 'Encode-Env' job and 'needs: Encode-Env' check)
+      # and replace with the env vars for your build command.
+      # env-vars: |
+      #   ARTIFACTORY_USER=${{ needs.encode-env.outputs.ARTIFACTORY_USER }}
+      #   ARTIFACTORY_PASSWD=${{ needs.encode-env.outputs.ARTIFACTORY_PASSWD }}
